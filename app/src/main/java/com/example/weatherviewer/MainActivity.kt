@@ -1,10 +1,8 @@
 package com.example.weatherviewer
 
-import android.app.DownloadManager
 import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -127,9 +125,12 @@ class MainActivity : AppCompatActivity() {
                         val weatherItem = weatherArray.getJSONObject(0)
                         val description = weatherItem.getString("description")
 
+                        val wind = response.getJSONObject("wind")
+                        val windSpeed = wind.getString("speed")
+
                         val main = response.getJSONObject("main")
                         val temperature = main.getString("temp")
-
+                        val humidity = main.getString("humidity")
 
                         val intent = Intent(applicationContext, ResultActivity::class.java)
 
@@ -138,6 +139,10 @@ class MainActivity : AppCompatActivity() {
                         intent.putExtra("country", countryName)
                         intent.putExtra("temperature", temperature)
                         intent.putExtra("description", description)
+                        intent.putExtra("windSpeed", windSpeed)
+                        intent.putExtra("humidity", humidity)
+
+
                         startActivity(intent)
                     } catch (e: JSONException) {
                         textViewMsg.setTextColor(Color.parseColor("#DC143C"))
