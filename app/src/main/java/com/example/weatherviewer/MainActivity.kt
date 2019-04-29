@@ -1,12 +1,10 @@
 package com.example.weatherviewer
 
+import android.Manifest
+import android.content.Context
 import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
@@ -15,6 +13,15 @@ import android.content.Intent
 import android.view.KeyEvent
 import android.view.View
 import org.json.JSONException
+import android.location.LocationManager
+import android.content.Context.LOCATION_SERVICE
+import android.content.pm.PackageManager
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
+import android.support.v4.content.ContextCompat.getSystemService
+import android.widget.*
+import android.location.Geocoder
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -26,6 +33,7 @@ class MainActivity : AppCompatActivity() {
         val editTextSearch = findViewById<EditText>(R.id.editText_searchCity)
         val textViewMsg = findViewById<TextView>(R.id.textView_message)
         val buttonSearch = findViewById<Button>(R.id.button_search)
+        val imageButtonGetLocation = findViewById<ImageButton>(R.id.imageButton_getLocation)
 
         // sets the message textView to start state aka removes the red error text after failed search
         editTextSearch.setOnClickListener {
@@ -45,6 +53,11 @@ class MainActivity : AppCompatActivity() {
         // handles search button press
         buttonSearch.setOnClickListener {
             getWeatherData()
+        }
+
+        imageButtonGetLocation.setOnClickListener {
+            Toast.makeText(this, "GPS BUTTON PRESSED", Toast.LENGTH_SHORT).show()
+            getLocation()
         }
 
     }
@@ -73,7 +86,6 @@ class MainActivity : AppCompatActivity() {
         } else if (cityWithCountryCode.contains(",")) {
             country = cityWithCountryCode.substring(i + 1)
         }
-
         return country
     }
 
@@ -160,6 +172,36 @@ class MainActivity : AppCompatActivity() {
             // Add JsonObjectRequest to the RequestQueue
             queue.add(jsonObjectRequest)
         }
+    }
+
+    // function to get user's location
+    fun getLocation() {
+
+        // checks for location permission
+        if( ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            // No permissions so they are asked
+            ActivityCompat.requestPermissions(
+                this, arrayOf( Manifest.permission.ACCESS_FINE_LOCATION), 0)
+            return
+        }
+
+        val editTextSearch = findViewById<EditText>(R.id.editText_searchCity)
+
+
+        val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+        val longitude = location.longitude
+        val latitude = location.latitude
+
+        Toast.makeText(this, "Longitude:" + longitude.toString() + " and latitude: " + latitude.toString() , Toast.LENGTH_SHORT).show()
+
+        val geocoder = Geocoder(this, Locale.getDefault())
+
+        val addresses = geocoder.getFromLocation(latitude, longitude, 1)
+        val cityName = addresses.get(0).getLocality()
+
+        editTextSearch.setText(cityName)
     }
 
 }
