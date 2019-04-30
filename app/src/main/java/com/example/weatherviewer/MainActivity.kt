@@ -14,15 +14,13 @@ import android.view.KeyEvent
 import android.view.View
 import org.json.JSONException
 import android.location.LocationManager
-import android.content.Context.LOCATION_SERVICE
 import android.content.pm.PackageManager
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.support.v4.content.ContextCompat.getSystemService
 import android.widget.*
 import android.location.Geocoder
 import java.util.*
-
+import android.widget.Toast
 
 class MainActivity : AppCompatActivity() {
 
@@ -56,7 +54,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         imageButtonGetLocation.setOnClickListener {
-            Toast.makeText(this, "GPS BUTTON PRESSED", Toast.LENGTH_SHORT).show()
             getLocation()
         }
 
@@ -187,21 +184,28 @@ class MainActivity : AppCompatActivity() {
         }
 
         val editTextSearch = findViewById<EditText>(R.id.editText_searchCity)
-
+        val textViewMsg = findViewById<TextView>(R.id.textView_message)
 
         val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-        val longitude = location.longitude
-        val latitude = location.latitude
 
-        Toast.makeText(this, "Longitude:" + longitude.toString() + " and latitude: " + latitude.toString() , Toast.LENGTH_SHORT).show()
+        // use Geocoder to get city name and country name
+        try {
+            val geo = Geocoder(this.applicationContext, Locale.getDefault())
+            val addresses = geo.getFromLocation(location.getLatitude(), location.getLongitude(), 1)
+            if (addresses.isEmpty()) {
+                editTextSearch.setText("Waiting for Location")
+            } else {
+                if (addresses.size > 0) {
+                    editTextSearch.setText(addresses[0].locality + ", " + addresses[0].countryName)
+                }
+            }
+            // handle exception with error message to UI
+        } catch (e: Exception) {
+            textViewMsg.setTextColor(Color.parseColor("#DC143C"))
+            textViewMsg.setText("No city found by that name, please try again.")
+        }
 
-        val geocoder = Geocoder(this, Locale.getDefault())
-
-        val addresses = geocoder.getFromLocation(latitude, longitude, 1)
-        val cityName = addresses.get(0).getLocality()
-
-        editTextSearch.setText(cityName)
     }
 
 }

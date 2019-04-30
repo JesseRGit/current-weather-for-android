@@ -5,4 +5,5 @@
     <string name="editText_searchCity_hint">tampere, fi</string>
     <string name="textView_message">Country code is optional and written after comma.</string>
     <string name="textView_info_temp">No data...</string>
+    <string name="imageButton">GPS button</string>
 </resources>
