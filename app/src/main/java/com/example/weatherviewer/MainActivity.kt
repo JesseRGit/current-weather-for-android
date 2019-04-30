@@ -39,6 +39,13 @@ class MainActivity : AppCompatActivity() {
             textViewMsg.text = "Country code is optional and written after comma."
         }
 
+        // empties the search field on long click
+        editTextSearch.setOnLongClickListener {
+            editTextSearch.setText("")
+            true
+        }
+
+
         // handles enter/proceed press on device
         editTextSearch.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
