@@ -1,5 +1,5 @@
 # current-weather-for-android
-App for Anroid OS that shows just simply shows current weather from user desired city. Search can be done by typing or from user's location if location permission is given.    
+App for Anroid OS that shows just simply shows current weather from user desired city. Search can be done by typing or from user's location if location permission is given.      
 Weather data is from OpenWeatherMap REST-api.
 
 ## Review 
