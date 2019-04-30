@@ -59,6 +59,21 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    public override fun onSaveInstanceState(savedInstanceState: Bundle) {
+        super.onSaveInstanceState(savedInstanceState)
+        // Save UI state changes to the savedInstanceState.
+        // This bundle will be passed to onCreate if the process is
+        // killed and restarted.
+        savedInstanceState.putString("SavedUserInput", findViewById<EditText>(R.id.editText_searchCity).text.toString())
+    }
+
+    public override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        // Restore UI state from the savedInstanceState.
+        // This bundle has also been passed to onCreate.
+        findViewById<EditText>(R.id.editText_searchCity).setText(savedInstanceState.getString("SavedUserInput"))
+    }
+
     // function to parse city from user input
     fun getCityName (): String {
         var cityWithCountryCode = findViewById<EditText>(R.id.editText_searchCity).text.toString()
